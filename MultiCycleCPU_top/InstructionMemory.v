@@ -11,7 +11,7 @@ module InstructionMemory(
  reg [7:0] Mem[0:127];
  
  initial begin
-     $readmemb("E:/vivado/Vivado_Project/Single-cycle_CPU/Instructions.txt", Mem);//从文件中读取指令集，要改成自己的Instruction.txt文件的地址，（并注意斜杆和反斜杠的规范）
+    $readmemb("E:/vivado/Vivado_Project/Single-cycle_CPU/Instructions.txt", Mem);//从文件中读取指令集，要改成自己的Instruction.txt文件的地址，（并注意斜杆和反斜杠的规范）
     IDataOut = 0;//指令初始化
 end
  always @(IAddr or RW) begin
