@@ -3,13 +3,13 @@
 module PC(
     input CLK, Reset, PCWre,
     input [1:0] PCSrc, 
-    input signed [15:0] Immediate,   //´ÓÖ¸ÁîÖĞÈ¡³ö·ûºÅÍØÕ¹¶øÀ´
-    input [31:0] dataFromRs,
-    input [31:0] JumpPC,//Ìø×ªµØÖ·
-    output reg signed [31:0] Address,
+    input signed [15:0] Immediate,   //ä»æŒ‡ä»¤ä¸­å–å‡ºç¬¦å·æ‹“å±•è€Œæ¥
+    input [31:0] dataFromRs,   //jræŒ‡ä»¤æ—¶æ¥è‡ª$31å·å¯„å­˜å™¨çš„PCåœ°å€å€¼
+    input [31:0] JumpPC,   //è·³è½¬åœ°å€
+    output reg signed [31:0] Address,   //å½“å‰æŒ‡ä»¤çš„PCåœ°å€å€¼
     output reg [31:0] nextPC,
-    output [31:0] PC_add_4,
-    output [3:0] PC4
+    output [31:0] PC_add_4,   //ç”¨äºæä¾›ç»™jalæŒ‡ä»¤å†™å…¥$31å·å¯„å­˜å™¨çš„åœ°å€å€¼
+    output [3:0] PC4   //ä¸‹ä¸€æ¡PCåœ°å€çš„å‰å››ä½ï¼Œç”¨äºæ„æˆJumpPCåœ°å€å€¼
  );
  always @(*) begin
      if(PCSrc==2'b11)  //j,jal
@@ -22,13 +22,13 @@ module PC(
  end
  
  assign PC_add_4 = Address + 4;
- //assign nextPC = (PCSrc[0]) ? Address + 4 + (Immediate << 2) : ((PCSrc[1]) ?  JumpPC : Address + 4);
+ 
  assign PC4 = Address[31:28];
- //µ±clockÏÂ½µÑØµ½À´»òResetÏÂ½µÑØµ½À´Ê±£¬¶ÔµØÖ·½øĞĞ¸Ä±ä»òÕßÖÃÁã
+ //å½“clockä¸Šå‡æ²¿åˆ°æ¥æˆ–Resetä¸‹é™æ²¿åˆ°æ¥æ—¶ï¼Œå¯¹åœ°å€è¿›è¡Œæ”¹å˜æˆ–è€…ç½®é›¶
 always @(posedge CLK or negedge Reset) begin     
     if(Reset == 0)
         Address = 0;
-    else if(PCWre) begin//PCWreÎª1Ê±²ÅÔÊĞí¸ü¸ÄµØÖ·
+    else if(PCWre) begin//PCWreä¸º1æ—¶æ‰å…è®¸æ›´æ”¹åœ°å€
         if(PCSrc==2'b11)  //j,jal
             Address <= JumpPC;
         else if(PCSrc==2'b01)  //beq,bne,bltz
@@ -40,10 +40,10 @@ always @(posedge CLK or negedge Reset) begin
  end
  endmodule
 
-
+//åºŸå¼ƒï¼Œä¸å¯ç”¨ï¼š
 //        if(PCSrc[0])
-//            Address = Address + 4 + (Immediate << 2);//Ìø×ª
+//            Address = Address + 4 + (Immediate << 2);//è·³è½¬
 //        else if(PCSrc[1])
 //            Address = JumpPC;
 //        else
-//            Address = Address + 4;//Ë³ĞòÖ´ĞĞÏÂÒ»ÌõÖ¸Áî
+//            Address = Address + 4;//é¡ºåºæ‰§è¡Œä¸‹ä¸€æ¡æŒ‡ä»¤
