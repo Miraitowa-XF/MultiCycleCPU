@@ -5,14 +5,14 @@ module InstructionMemory(
     input RW,//0 write, 1 read
     output reg [31:0] IDataOut
  );
-//ÒòÎªÊµÑéÒªÇóÖ¸Áî´æ´¢Æ÷ºÍÊı¾İ´æ´¢Æ÷µ¥Ôª¿í¶ÈÒ»ÂÉÊ¹ÓÃ8Î»£¬
-//Òò´Ë½«Ò»¸ö32Î»µÄÖ¸Áî²ğ³É4¸ö8Î»µÄ´æ´¢Æ÷µ¥Ôª´æ´¢
-//´ÓÎÄ¼şÖĞÈ¡³öºó½«ËûÃÇºÏ²¢Îª32µÄÖ¸Áî
+//å› ä¸ºå®éªŒè¦æ±‚æŒ‡ä»¤å­˜å‚¨å™¨å’Œæ•°æ®å­˜å‚¨å™¨å•å…ƒå®½åº¦ä¸€å¾‹ä½¿ç”¨8ä½ï¼Œ
+//å› æ­¤å°†ä¸€ä¸ª32ä½çš„æŒ‡ä»¤æ‹†æˆ4ä¸ª8ä½çš„å­˜å‚¨å™¨å•å…ƒå­˜å‚¨
+//ä»æ–‡ä»¶ä¸­å–å‡ºåå°†ä»–ä»¬åˆå¹¶ä¸º32çš„æŒ‡ä»¤
  reg [7:0] Mem[0:127];
  
  initial begin
-    $readmemb("E:/vivado/Vivado_Project/Single-cycle_CPU/Instructions.txt", Mem);//´ÓÎÄ¼şÖĞ¶ÁÈ¡Ö¸Áî¼¯
-    IDataOut = 0;//Ö¸Áî³õÊ¼»¯
+     $readmemb("E:/vivado/Vivado_Project/Single-cycle_CPU/Instructions.txt", Mem);//ä»æ–‡ä»¶ä¸­è¯»å–æŒ‡ä»¤é›†ï¼Œè¦æ”¹æˆè‡ªå·±çš„Instruction.txtæ–‡ä»¶çš„åœ°å€ï¼Œï¼ˆå¹¶æ³¨æ„æ–œæ†å’Œåæ–œæ çš„è§„èŒƒï¼‰
+    IDataOut = 0;//æŒ‡ä»¤åˆå§‹åŒ–
 end
  always @(IAddr or RW) begin
     if(RW == 1) begin
@@ -37,9 +37,9 @@ end
 //     output [31:0] JumpPC,
 //     output reg [31:0] IDataOut
 //  );
-// //ÒòÎªÊµÑéÒªÇóÖ¸Áî´æ´¢Æ÷ºÍÊı¾İ´æ´¢Æ÷µ¥Ôª¿í¶ÈÒ»ÂÉÊ¹ÓÃ8Î»£¬
-// //Òò´Ë½«Ò»¸ö32Î»µÄÖ¸Áî²ğ³É4¸ö8Î»µÄ´æ´¢Æ÷µ¥Ôª´æ´¢
-// //´ÓÎÄ¼şÖĞÈ¡³öºó½«ËûÃÇºÏ²¢Îª32µÄÖ¸Áî
+// //å› ä¸ºå®éªŒè¦æ±‚æŒ‡ä»¤å­˜å‚¨å™¨å’Œæ•°æ®å­˜å‚¨å™¨å•å…ƒå®½åº¦ä¸€å¾‹ä½¿ç”¨8ä½ï¼Œ
+// //å› æ­¤å°†ä¸€ä¸ª32ä½çš„æŒ‡ä»¤æ‹†æˆ4ä¸ª8ä½çš„å­˜å‚¨å™¨å•å…ƒå­˜å‚¨
+// //ä»æ–‡ä»¶ä¸­å–å‡ºåå°†ä»–ä»¬åˆå¹¶ä¸º32çš„æŒ‡ä»¤
 //  reg [7:0] Mem[0:127];
   
 //  assign op = IDataOut[31:26];
@@ -51,8 +51,8 @@ end
 //  assign Sa = IDataOut[10:6];
 //  assign JumpPC = {{PC4}, {IDataOut[25:0]}, {2'b00}};
 //  initial begin
-//     $readmemb("E:/vivado/Vivado_Project/Single-cycle_CPU/Instructions.txt", Mem);//´ÓÎÄ¼şÖĞ¶ÁÈ¡Ö¸Áî¼¯
-//     IDataOut = 0;//Ö¸Áî³õÊ¼»¯
+//     $readmemb("E:/vivado/Vivado_Project/Single-cycle_CPU/Instructions.txt", Mem);//ä»æ–‡ä»¶ä¸­è¯»å–æŒ‡ä»¤é›†
+//     IDataOut = 0;//æŒ‡ä»¤åˆå§‹åŒ–
 // end
 //  always @(IAddr or RW) begin
 //     if(RW == 1) begin
