@@ -10,15 +10,17 @@ module RegisterFile(
     output reg [31:0] Data1, Data2,
     output [31:0] writeData
 );
-    reg [4:0] writeReg; // ÒªĞ´µÄ¼Ä´æÆ÷¶Ë¿Ú
+    reg [4:0] writeReg; // è¦å†™çš„å¯„å­˜å™¨ç«¯å£
     always @(*) begin
         case (RegDst)
             2'b01: writeReg = rt;
             2'b10: writeReg = rd;
-            2'b00: writeReg = 5'b11111; // jal Ö¸ÁîĞ´Èë $31
+            2'b00: writeReg = 5'b11111; // jal æŒ‡ä»¤å†™å…¥ $31
             default: writeReg = 5'b00000;
         endcase
     end
+
+//è¯¥å†™æ³•å·²ä¼˜åŒ–ä¸ºä¸Šé¢çš„é‚£ç§å†™æ³•ï¼š    
 //    always @(*)begin
 //        if(RegDst==2'b01)
 //            writeReg=rt;
@@ -27,41 +29,43 @@ module RegisterFile(
 //        else if(RegDst==2'b00)
 //            writeReg=5'b11111;
 //    end
-    //assign writeReg = RegDst ? rd : rt;
+    
 
-    // ALUM2Reg Îª 0 Ê±£¬Ê¹ÓÃÀ´×Ô ALU µÄÊä³ö£»Îª 1 Ê±£¬Ê¹ÓÃÀ´×ÔÊı¾İ´æ´¢Æ÷£¨DM£©µÄÊä³ö
+    // WrRegDSrc ä¸º 1 æ—¶ï¼Œä½¿ç”¨æ¥è‡ªâ€œALUçš„è¿ç®—ç»“æœâ€æˆ–è€…â€œä»æ•°æ®å­˜å‚¨å™¨è¯»å‡ºçš„è¾“å‡ºâ€ï¼›ä¸º 0 æ—¶ï¼Œä½¿ç”¨æ¥è‡ªå½“å‰PCçš„ä¸‹ä¸€æ¡æŒ‡ä»¤çš„åœ°å€
     assign writeData = WrRegDSrc ? drDB : PC_add_4;
 
-    // ³õÊ¼»¯¼Ä´æÆ÷
+    // åˆå§‹åŒ–å¯„å­˜å™¨
     reg [31:0] register[0:31];
     integer i;
     initial begin
         for (i = 0; i < 32; i = i + 1) 
-            register[i] = 32'b0; // Ê¹ÓÃ×èÈû¸³Öµ³õÊ¼»¯
+            register[i] = 32'b0; // ä½¿ç”¨é˜»å¡èµ‹å€¼åˆå§‹åŒ–
     end
 
-    // Êä³ö£ºËæ¼Ä´æÆ÷±ä»¯¶ø±ä»¯
+    // è¾“å‡ºï¼šéšå¯„å­˜å™¨åœ°å€çš„å˜åŒ–è€Œå˜åŒ–
     always @(*) begin
         Data1 = register[rs];
         Data2 = register[rt];
     end
-    
+
+
+    //ä¸‹é¢æ¨¡å—ä»å¯ä¼˜åŒ–ï¼Œç•™ç»™è¯»è€…è‡ªè¡Œè®¾è®¡ï¼š
     always @(CLK) begin
-        if (CLK==0 && RegWre && (writeReg != 5'b00000)&&(writeReg!=5'b11111)) // ±ÜÃâĞ´Èë¼Ä´æÆ÷ 0
-                register[writeReg] <= writeData;                        //$31µÄĞ´ÈëÓÉÏÂÃæ´úÂëÍê³É
-        else if(CLK==1 && RegWre && WrRegDSrc==0 && (writeReg != 5'b00000))  //jalÖ¸ÁîÊ±°ÑPC_add_4Ğ´Èë$31¼Ä´æÆ÷
+        if (CLK==0 && RegWre && (writeReg != 5'b00000)&&(writeReg!=5'b11111)) // é¿å…å†™å…¥å¯„å­˜å™¨ 0
+                register[writeReg] <= writeData;                        //$31çš„å†™å…¥ç”±ä¸‹é¢ä»£ç å®Œæˆ
+        else if(CLK==1 && RegWre && WrRegDSrc==0 && (writeReg != 5'b00000))  //jalæŒ‡ä»¤æ—¶æŠŠPC_add_4å†™å…¥$31å¯„å­˜å™¨
                 register[writeReg] <= writeData;
     end
     
     
-    
-//    // ÔÚÊ±ÖÓÏÂ½µÑØĞ´Èë¼Ä´æÆ÷
+//ä¸‹é¢è¿™ç§å†™æ³•åœ¨ä»¿çœŸæ—¶è™½ç„¶èƒ½å¤Ÿæ­£å¸¸è¿è¡Œï¼Œä½†æ˜¯ä¸ç¬¦åˆæ ‡å‡†ç”¨æ³•ï¼Œåœ¨ç»¼åˆæ—¶ä¼šæŠ¥é”™ï¼›
+//    // åœ¨æ—¶é’Ÿä¸‹é™æ²¿å†™å…¥å¯„å­˜å™¨
 //    always @(negedge CLK) begin
-//        if (RegWre && (writeReg != 5'b00000)&&(writeReg!=5'b11111)) // ±ÜÃâĞ´Èë¼Ä´æÆ÷ 0
-//            register[writeReg] <= writeData;                        //$31µÄĞ´ÈëÓÉÏÂÃæ´úÂëÍê³É
+//        if (RegWre && (writeReg != 5'b00000)&&(writeReg!=5'b11111)) // é¿å…å†™å…¥å¯„å­˜å™¨ 0
+//            register[writeReg] <= writeData;                        //$31çš„å†™å…¥ç”±ä¸‹é¢ä»£ç å®Œæˆ
 //    end
     
-//    //jalÖ¸ÁîÊ±°ÑPC_add_4Ğ´Èë$31¼Ä´æÆ÷
+//    //jalæŒ‡ä»¤æ—¶æŠŠPC_add_4å†™å…¥$31å¯„å­˜å™¨
 //    always @(posedge CLK)begin
 //            if(RegWre && WrRegDSrc==0 && (writeReg != 5'b00000))
 //                register[writeReg] <= writeData;
