@@ -30,7 +30,7 @@ module multiCycleCPU(
      InstructionMemory IM(curPC,InsMemRW,Instruction);
      IR ir(CLK,IRWre,Instruction,PC4,OpCode,func,rs,rt,rd,Immediate,sa,JumpPC);
      RegisterFile RF(CLK,WrRegDSrc,drPC_add_4,RegDst,RegWre,rs,rt,rd,drDB,Out1,Out2,DBData);
-     DR pcadd(CLK,PC_add_4,drPC_add_4);
+     DR pcadd(CLK,PC_add_4,drPC_add_4);  //读者可以考虑设计这个模块的必要性，若没有该模块在仿真时虽然jal能够正常在$31号寄存器写入PC+4，但是在烧板后该指令却不能正常执行；
      DR Adr(CLK,Out1,drOut1);
      DR Bdr(CLK,Out2,drOut2);
      ALU alu(drOut1,drOut2,Extout,sa,ALUOp,ALUSrcA,ALUSrcB,zero,Result,sign);
