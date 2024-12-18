@@ -29,12 +29,12 @@ module multiCycleCPU_sim();
         $dumpvars(0, multiCycleCPU_sim);
         //innitial inputs
         CLK = 0;
-        Reset = 0;//¸Õ¿ªÊ¼ÉèÖÃPCÎª0
+        Reset = 0;//åˆšå¼€å§‹è®¾ç½®PCä¸º0
         #50;
         CLK = 1;
         #50;
         Reset = 1;
-        //²úÉúÊ±ÖÓĞÅºÅ
+        //äº§ç”Ÿæ—¶é’Ÿä¿¡å·
         forever #50 begin
             CLK = !CLK;
         end
