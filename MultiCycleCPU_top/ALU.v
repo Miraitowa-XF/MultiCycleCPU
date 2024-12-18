@@ -16,7 +16,7 @@ module ALU(
     assign InA = ALUSrcA ? {{27{1'b0}}, Sa} : ReadData1;
     assign InB = ALUSrcB ? Ext : ReadData2;
     assign zero = (Result == 0) ? 1 : 0;
-    assign sign = ($signed(Result) < 0) ? 1 : 0;   //bltzָ��ĳ��渳ֵ
+        assign sign = ($signed(Result) < 0) ? 1 : 0;   //该信号用于bltz指令执行是否为真的一个标志
     always @(ALUop or InA or InB) begin
         case(ALUop) 
             3'b000 : 
