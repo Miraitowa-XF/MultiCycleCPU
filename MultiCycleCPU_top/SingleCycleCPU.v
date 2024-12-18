@@ -41,10 +41,3 @@ module multiCycleCPU(
      SignZeroExtend SZE(Immediate, ExtSel, Extout);
  endmodule
 
-//     ALU alu(Out1, Out2, Extout, sa, ALUOp, ALUSrcA, ALUSrcB, zero, Result, sign);
-//     PC pc(CLK, Reset, PCWre, PCSrc, Immediate, JumpPC, curPC, nextPC, PC4);
-//     ControlUnit CU(Opcode, func, zero, sign, PCWre, ALUSrcA, ALUSrcB, DBDataSrc, ReWre, InsMemRW, RD, WR, ExtSel, RegDst, PCSrc, ALUOp);
-//     DataMemory DM(CLK, Result, Out2, RD, WR, DMOut);
-//     InstructionMemory IM(PC4, curPC, InsMemRW, Opcode, func, rs, rt, rd, Immediate, sa, JumpPC, Instruction);
-//     RegisterFile RF(CLK, RegDst, ReWre, DBDataSrc, rs, rt, rd, Result, DMOut, Out1, Out2, DBData);
-//     SignZeroExtend SZE(Immediate, ExtSel, Extout);
