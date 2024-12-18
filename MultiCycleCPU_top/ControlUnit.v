@@ -1,41 +1,41 @@
 `timescale 1ns / 1ps
 module ControlUnit(
-    //¸ù¾İÊı¾İÍ¨Â·Í¼¶¨ÒåÊäÈëºÍÊä³ö
+    //æ ¹æ®æ•°æ®é€šè·¯å›¾å®šä¹‰è¾“å…¥å’Œè¾“å‡º
     input [2:0] state,
     input [5:0] OpCode,
     input [5:0] func,
     input zero,
     input sign,
     
-    output reg IRWre,   //IRÖ¸Áî¼Ä´æÆ÷µÄĞ´Ê¹ÄÜĞÅºÅ£¬0£º²»¸ü¸Ä£»1£º½ÓÊÜÀ´×ÔÖ¸Áî¼Ä´æÆ÷µÄÖ¸Áî
+    output reg IRWre,   //IRæŒ‡ä»¤å¯„å­˜å™¨çš„å†™ä½¿èƒ½ä¿¡å·ï¼Œ0ï¼šä¸æ›´æ”¹ï¼›1ï¼šæ¥å—æ¥è‡ªæŒ‡ä»¤å¯„å­˜å™¨çš„æŒ‡ä»¤
     output reg PCWre,
     output reg ALUSrcA, 
     output reg ALUSrcB,
-    output reg DBDataSrc,  //0£ºÊı¾İÀ´×ÔALUÔËËã½á¹û£» 1£ºÀ´×ÔDMOut
-    output reg WrRegDSrc, //0£ºĞ´Èë¼Ä´æÆ÷µÄÖµÀ´×ÔPC+4£» 1£ºÀ´×ÔALU½á¹û»òÕßDMOut
+    output reg DBDataSrc,  //0ï¼šæ•°æ®æ¥è‡ªALUè¿ç®—ç»“æœï¼› 1ï¼šæ¥è‡ªDMOut
+    output reg WrRegDSrc, //0ï¼šå†™å…¥å¯„å­˜å™¨çš„å€¼æ¥è‡ªPC+4ï¼› 1ï¼šæ¥è‡ªALUç»“æœæˆ–è€…DMOut
     output reg InsMemRW,
     output reg RD,
     output reg WR,
-    output reg ExtSel,   //0£ºÁãÀ©Õ¹£» 1£º·ûºÅÀ©Õ¹
-    output reg [1:0] RegDst, //ÒªĞ´µÄ¼Ä´æÆ÷µÄµØÖ·
-    output reg [1:0] PCSrc,  //¾ö¶¨ÏÂÒ»ÌõPCÈçºÎ¸Ä±ä
-    output reg [2:0] ALUOp,   //¾ö¶¨ÔËËã¹¦ÄÜ
+    output reg ExtSel,   //0ï¼šé›¶æ‰©å±•ï¼› 1ï¼šç¬¦å·æ‰©å±•
+    output reg [1:0] RegDst, //è¦å†™çš„å¯„å­˜å™¨çš„åœ°å€
+    output reg [1:0] PCSrc,  //å†³å®šä¸‹ä¸€æ¡PCå¦‚ä½•æ”¹å˜
+    output reg [2:0] ALUOp,   //å†³å®šè¿ç®—åŠŸèƒ½
     output reg RegWre
 );
-    //ÉèÖÃ³£Á¿
+    //è®¾ç½®å¸¸é‡
     parameter [2:0] IF = 3'b000,
     ID = 3'b001, EXE1 = 3'b110,
     EXE2 = 3'b101, EXE3 = 3'b010,
     WB1 = 3'b111, WB2 = 3'b100,
     MEM = 3'b011;    
     
-    //Ã¿´Î×´Ì¬¸Ä±äÊ±£¬ĞÅºÅ·¢Éú¸Ä±ä
+    //æ¯æ¬¡çŠ¶æ€æ”¹å˜æ—¶ï¼Œä¿¡å·å‘ç”Ÿæ”¹å˜
     always @(state) begin
         DBDataSrc = (OpCode == 6'b100011) ? 1 : 0; //lw
         WrRegDSrc = (OpCode == 6'b000011) ? 0 : 1; //jal
         ExtSel=(OpCode==6'b001100||OpCode==6'b001110||OpCode==6'b001101)?0:1; //andi,xori,ori
         PCSrc[1]=((OpCode==6'b000000&&func==6'b001000)||OpCode==6'b000010||OpCode==6'b000011)?1:0; //jr,j,jal
-        PCSrc[0]=((OpCode==6'b000100&&zero==1)||(OpCode==6'b000101&&zero==0)||(OpCode==6'b000001&&sign==1)||OpCode==6'b000010||OpCode==6'b000011)?1:0; //beq(zero=1)¡¢bne(zero=0)¡¢bltz(sign=1)¡¢j¡¢jal
+        PCSrc[0]=((OpCode==6'b000100&&zero==1)||(OpCode==6'b000101&&zero==0)||(OpCode==6'b000001&&sign==1)||OpCode==6'b000010||OpCode==6'b000011)?1:0; //beq(zero=1)ã€bne(zero=0)ã€bltz(sign=1)ã€jã€jal
         RegDst[1]=((OpCode==6'b000000&&func==6'b100000)||(OpCode==6'b000000&&func==6'b100010)||(OpCode==6'b000000&&func==6'b100100)||(OpCode==6'b000000&&func==6'b101010)||(OpCode==6'b000000&&func==6'b000000))?1:0; //add,sub,and,slt,sll
         RegDst[0]=((OpCode==6'b000000&&func==6'b100000)||(OpCode==6'b000000&&func==6'b100010)||(OpCode==6'b000000&&func==6'b100100)||(OpCode==6'b000000&&func==6'b101010)||(OpCode==6'b000000&&func==6'b000000)||OpCode==6'b000011)?0:1; //add,sub,and,slt,sll,jal
         
@@ -77,7 +77,7 @@ module ControlUnit(
         //WB
         if(state==WB1||state==WB2)
             RegWre=(OpCode==6'b000100||OpCode==6'b000101||OpCode==6'b000001||OpCode==6'b000010||OpCode==6'b101011||(OpCode==6'b000000&&func==6'b001000)||OpCode==6'b111111)?0:1; //beq,bne,bltz,j,sw,jr,halt
-        else if (OpCode==6'b000011 && state==IF)   //ÔÊĞíjalÖ¸ÁîÔÚID½×¶ÎĞ´¼Ä´æÆ÷
+        else if (OpCode==6'b000011 && state==IF)   //å…è®¸jalæŒ‡ä»¤åœ¨IDé˜¶æ®µå†™å¯„å­˜å™¨ï¼Œè€Œæˆ‘çš„stateæ˜¯åœ¨æ—¶é’Ÿä¸‹é™æ²¿æ‰æ”¹å˜ï¼Œæ‰€ä»¥ä¸ºäº†é˜²æ­¢$31å†™å…¥é”™è¯¯ï¼Œæ‰€ä»¥åœ¨å®ƒçš„ä¸‹ä¸€ä¸ªstatsï¼ˆIFçŠ¶æ€ï¼‰æ‰è®©RegWreæ”¹å˜ï¼ˆè¿™é‡Œæˆ‘åˆ¤æ–­çŠ¶æ€ä¸ºIFæ‰æ›´æ”¹ä¿¡å·ï¼Œæ˜¯æˆ‘ç»è¿‡ä¸æ–­è°ƒè¯•æ”¹å‡ºæ¥çš„ï¼Œå¯èƒ½æ›´å¥½çš„å®ç°èƒ½è®©å®ƒæ›´åŠ è§„èŒƒçš„å®ç°ï¼‰
             RegWre=1;
         else RegWre=0; 
             
@@ -85,8 +85,8 @@ module ControlUnit(
     
 endmodule
 
-
-    //¸ù¾İopcode¶¨Òå¿ØÖÆĞÅºÅÎª1»ò0
+//å•å‘¨æœŸCPUæ§åˆ¶ä¿¡å·çš„ç¡®å®šå‚è€ƒï¼š
+    //æ ¹æ®opcodeå’Œfuncå®šä¹‰æ§åˆ¶ä¿¡å·ä¸º1æˆ–0
 //    assign PCWre = (OpCode == 6'b111111) ? 0 : 1;
 //    assign ALUSrcA = (OpCode == 6'b000000 && func == 6'b000000) ? 1 : 0;
 //    assign ALUSrcB = (OpCode == 6'b001001 || OpCode == 6'b001100 || OpCode == 6'b001101 || OpCode == 6'b001010 || OpCode == 6'b101011 || OpCode == 6'b100011) ? 1 : 0;
